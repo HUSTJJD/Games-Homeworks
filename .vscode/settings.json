@@ -1,0 +1,16 @@
+{
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "terminal.integrated.profiles.windows": {
+        "PowerShell": {
+            "source": "PowerShell",
+            "icon": "terminal-powershell",
+            "args": [
+                "-noe",
+                "-c",
+                "&{Import-Module \"D:\\software\\Microsoft Visual Studio\\2022\\Common7\\Tools\\Microsoft.VisualStudio.DevShell.dll\"; Enter-VsDevShell 22d00f82; cd ${workspaceFolder}; $env:CMAKE_PREFIX_PATH+=\"${workspaceFolder}/third/Eigen3;${workspaceFolder}/third/OpenCV;${workspaceFolder}/third/freetype;${workspaceFolder}/third/getopt9;${workspaceFolder}/third/nori;\"; }",
+            ],
+        },
+        "Git Bash": null,
+        "Command Prompt": null,
+    }
+}
