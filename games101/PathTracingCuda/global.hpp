@@ -9,8 +9,10 @@
 #include <cassert>
 
 constexpr float EPSILON = 1e-6;
-constexpr float kInfinity = 0x7F7FFFFF;
-constexpr float MAX_FLOAT = 0x7F800000;
+constexpr float MAX_FLOAT = std::numeric_limits<float>::max();
+constexpr float INFINITY_FLOAT = std::numeric_limits<float>::infinity();
+constexpr double MAX_DOUBLE = std::numeric_limits<double>::max();
+constexpr double LOWEST_DOUBLE = std::numeric_limits<double>::lowest();
 constexpr uint32_t MAX_OBJECT = 16;
 constexpr uint32_t MAX_LIGHT = 16;
 constexpr uint32_t MAX_PRIMITIVES = 24;

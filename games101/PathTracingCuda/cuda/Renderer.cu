@@ -138,12 +138,7 @@ __global__ void kernel(Scene *scene, int spp, Vector3f *eye_pos, float scale, fl
         float y = (1 - 2 * (j + 0.5) / (float)scene->height) * scale;
         Vector3f dir = normalize(Vector3f(-x, y, 1));
 
-        // 累加前确保原子操作或同步
-        Vector3f color = scene->castRay(Ray(eye_pos, dir), 0, tid) / spp;
-        atomicAdd(&framebuffer[j * scene->width + i].x, color.x);
-        atomicAdd(&framebuffer[j * scene->width + i].y, color.y);
-        atomicAdd(&framebuffer[j * scene->width + i].z, color.z);
-
+        framebuffer[j * scene->width + i] += scene->castRay(Ray(eye_pos, dir), 0, tid) / spp;
         tid += offset;
     }
 }

@@ -15,7 +15,7 @@ struct Intersection
         happened = false;
         coords = Vector3f();
         normal = Vector3f();
-        distance = MAX_FLOAT;
+        distance = MAX_DOUBLE;
         obj = nullptr;
         m = nullptr;
     }

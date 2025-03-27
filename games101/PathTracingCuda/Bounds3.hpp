@@ -15,15 +15,15 @@ public:
     Vector3f pMin, pMax; // two points to specify the bounding box
     __device__ Bounds3()
     {
-        double minNum = -MAX_FLOAT;
-        double maxNum = MAX_FLOAT;
+        double minNum = LOWEST_DOUBLE;
+        double maxNum = MAX_DOUBLE;
         pMax = Vector3f(minNum, minNum, minNum);
         pMin = Vector3f(maxNum, maxNum, maxNum);
     }
     Bounds3(bool bHost)
     {
-        double minNum = -MAX_FLOAT;
-        double maxNum = MAX_FLOAT;
+        double minNum = LOWEST_DOUBLE;
+        double maxNum = MAX_DOUBLE;
         pMax = Vector3f(minNum, minNum, minNum, bHost);
         pMin = Vector3f(maxNum, maxNum, maxNum, bHost);
     }
@@ -95,9 +95,9 @@ public:
     {
         // Home Work Begin
         // 光线进入点
-        float tEnter = -MAX_FLOAT;
+        float tEnter = -INFINITY_FLOAT;
         // 光线离开点
-        float tExit = MAX_FLOAT;
+        float tExit = INFINITY_FLOAT;
         for (int i = 0; i < 3; i++)
         {
             float min = (pMin[i] - ray.origin[i]) * invDir[i];

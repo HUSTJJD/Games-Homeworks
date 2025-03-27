@@ -16,7 +16,7 @@ struct Ray
     {
         direction_inv = Vector3f(1. / direction.x, 1. / direction.y, 1. / direction.z);
         t_min = 0.0;
-        t_max = MAX_FLOAT;
+        t_max = MAX_DOUBLE;
     }
     __device__ Vector3f operator()(double t) const { return origin + direction * t; }
 
@@ -24,7 +24,7 @@ struct Ray
     {
         direction_inv = Vector3f(1. / direction.x, 1. / direction.y, 1. / direction.z, bHost);
         t_min = 0.0;
-        t_max = MAX_FLOAT;
+        t_max = MAX_DOUBLE;
     }
 };
 

@@ -122,12 +122,12 @@ public:
         assert(loader.LoadedMeshes.size() == 1);
         auto mesh = loader.LoadedMeshes[0];
 
-        Vector3f min_vert = Vector3f{std::numeric_limits<float>::infinity(),
-                                     std::numeric_limits<float>::infinity(),
-                                     std::numeric_limits<float>::infinity(), true};
-        Vector3f max_vert = Vector3f{-std::numeric_limits<float>::infinity(),
-                                     -std::numeric_limits<float>::infinity(),
-                                     -std::numeric_limits<float>::infinity(), true};
+        Vector3f min_vert = Vector3f{INFINITY_FLOAT,
+                                     INFINITY_FLOAT,
+                                     INFINITY_FLOAT, true};
+        Vector3f max_vert = Vector3f{-INFINITY_FLOAT,
+                                     -INFINITY_FLOAT,
+                                     -INFINITY_FLOAT, true};
         for (int i = 0; i < mesh.Vertices.size(); i += 3)
         {
             std::array<Vector3f, 3> face_vertices;

@@ -95,7 +95,7 @@ public:
         *hitObject = nullptr;
         for (uint32_t k = 0; k < objects_num; ++k)
         {
-            float tNearK = kInfinity;
+            float tNearK = MAX_FLOAT;
             uint32_t indexK;
             Vector2f uvK;
             if (((MeshTriangle*)objects[k])->intersect(ray, tNearK, indexK) && tNearK < tNear)
