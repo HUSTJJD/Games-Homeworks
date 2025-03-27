@@ -1,5 +1,6 @@
 {
     "recommendations": [
-        "ngtystr.ppm-pgm-viewer-for-vscode"
+        "ngtystr.ppm-pgm-viewer-for-vscode",
+        "ms-vscode.live-server"
     ]
 }

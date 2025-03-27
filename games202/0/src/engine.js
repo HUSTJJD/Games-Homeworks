@@ -35,7 +35,7 @@ function GAMES202Main() {
 
 	const renderer = new WebGLRenderer(gl, camera);
 	renderer.addLight(pointLight);
-	loadOBJ(renderer, 'assets/mary/', 'Marry');
+	loadOBJ(renderer, '../assets/mary/', 'Marry');
 
 	var guiParams = {
 		modelTransX: 0,

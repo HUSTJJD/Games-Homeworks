@@ -1,7 +1,7 @@
 var cameraPosition = [0, 80, 300];
 
 var envmap = [
-	'assets/cubemap/CornellBox'
+	'../assets/cubemap/CornellBox'
 ];
 
 var guiParams = {
@@ -68,7 +68,7 @@ async function GAMES202Main() {
 
 	// Add Sphere
 	let img = new Image(); // brdfLUT
-	img.src = 'assets/ball/GGX_E_LUT.png';
+	img.src = '../assets/ball/GGX_E_LUT.png';
 	var loadImage = async img => {
 		return new Promise((resolve, reject) => {
 			img.onload = async () => {
@@ -82,7 +82,7 @@ async function GAMES202Main() {
 	brdflut.CreateImageTexture(gl, img);
 
 	let img1 = new Image(); // eavgLUT
-	img1.src = 'assets/ball/GGX_Eavg_LUT.png';
+	img1.src = '../assets/ball/GGX_Eavg_LUT.png';
 	var loadImage = async img => {
 		return new Promise((resolve, reject) => {
 			img.onload = async () => {
@@ -97,26 +97,26 @@ async function GAMES202Main() {
 
 	let metallic = 1.0;
 	let Sphere0Transform = setTransform(180, 60, 0, 180, 180, 180, 0, Math.PI, 0);
-	//loadGLTF(renderer, 'assets/ball/', 'ball', 'KullaContyMaterial', Sphere0Transform, metallic, 0.15);
+	//loadGLTF(renderer, '../assets/ball/', 'ball', 'KullaContyMaterial', Sphere0Transform, metallic, 0.15);
 	let Sphere1Transform = setTransform(100, 60, 0, 180, 180, 180, 0, Math.PI, 0);
-	loadGLTF(renderer, 'assets/ball/', 'ball', 'KullaContyMaterial', Sphere1Transform, metallic, 0.35);
+	loadGLTF(renderer, '../assets/ball/', 'ball', 'KullaContyMaterial', Sphere1Transform, metallic, 0.35);
 	let Sphere2Transform = setTransform(20, 60, 0, 180, 180, 180, 0, Math.PI, 0);
-	loadGLTF(renderer, 'assets/ball/', 'ball', 'KullaContyMaterial', Sphere2Transform, metallic, 0.55);
+	loadGLTF(renderer, '../assets/ball/', 'ball', 'KullaContyMaterial', Sphere2Transform, metallic, 0.55);
 	let Sphere3Transform = setTransform(-60, 60, 0, 180, 180, 180, 0, Math.PI, 0);
-	loadGLTF(renderer, 'assets/ball/', 'ball', 'KullaContyMaterial', Sphere3Transform, metallic, 0.75);
+	loadGLTF(renderer, '../assets/ball/', 'ball', 'KullaContyMaterial', Sphere3Transform, metallic, 0.75);
 	let Sphere4Transform = setTransform(-140, 60, 0, 180, 180, 180, 0, Math.PI, 0);
-	loadGLTF(renderer, 'assets/ball/', 'ball', 'KullaContyMaterial', Sphere4Transform, metallic, 0.95);
+	loadGLTF(renderer, '../assets/ball/', 'ball', 'KullaContyMaterial', Sphere4Transform, metallic, 0.95);
 
 	let Sphere5Transform = setTransform(180, -60, 0, 180, 180, 180, 0, Math.PI, 0);
-	//loadGLTF(renderer, 'assets/ball/', 'ball', 'PBRMaterial', Sphere5Transform, metallic, 0.15);
+	//loadGLTF(renderer, '../assets/ball/', 'ball', 'PBRMaterial', Sphere5Transform, metallic, 0.15);
 	let Sphere6Transform = setTransform(100, -60, 0, 180, 180, 180, 0, Math.PI, 0);
-	loadGLTF(renderer, 'assets/ball/', 'ball', 'PBRMaterial', Sphere6Transform, metallic, 0.35);
+	loadGLTF(renderer, '../assets/ball/', 'ball', 'PBRMaterial', Sphere6Transform, metallic, 0.35);
 	let Sphere7Transform = setTransform(20, -60, 0, 180, 180, 180, 0, Math.PI, 0);
-	loadGLTF(renderer, 'assets/ball/', 'ball', 'PBRMaterial', Sphere7Transform, metallic, 0.55);
+	loadGLTF(renderer, '../assets/ball/', 'ball', 'PBRMaterial', Sphere7Transform, metallic, 0.55);
 	let Sphere8Transform = setTransform(-60, -60, 0, 180, 180, 180, 0, Math.PI, 0);
-	loadGLTF(renderer, 'assets/ball/', 'ball', 'PBRMaterial', Sphere8Transform, metallic, 0.75);
+	loadGLTF(renderer, '../assets/ball/', 'ball', 'PBRMaterial', Sphere8Transform, metallic, 0.75);
 	let Sphere9Transform = setTransform(-140, -60, 0, 180, 180, 180, 0, Math.PI, 0);
-	loadGLTF(renderer, 'assets/ball/', 'ball', 'PBRMaterial', Sphere9Transform, metallic, 0.95);
+	loadGLTF(renderer, '../assets/ball/', 'ball', 'PBRMaterial', Sphere9Transform, metallic, 0.95);
 	// Add SkyBox
 	for (let i = 0; i < envmap.length; i++) {
 		let urls = [
@@ -131,7 +131,7 @@ async function GAMES202Main() {
 		await cubeMaps[i].init();
 	}
 	let skyBoxTransform = setTransform(0, 50, 50, 150, 150, 150);
-	loadOBJ(renderer, 'assets/testObj/', 'testObj', 'SkyBoxMaterial', skyBoxTransform);
+	loadOBJ(renderer, '../assets/testObj/', 'testObj', 'SkyBoxMaterial', skyBoxTransform);
 
 	function createGUI() {
 		const gui = new dat.gui.GUI();

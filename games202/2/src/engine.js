@@ -3,10 +3,10 @@ let precomputeL = [];
 var cameraPosition = [50, 0, 100];
 
 var envmap = [
-	'assets/cubemap/GraceCathedral',
-	'assets/cubemap/Indoor',
-	'assets/cubemap/Skybox',
-	'assets/cubemap/CornellBox',
+	'../assets/cubemap/GraceCathedral',
+	'../assets/cubemap/Indoor',
+	'../assets/cubemap/Skybox',
+	'../assets/cubemap/CornellBox',
 ];
 
 var guiParams = {
@@ -83,7 +83,7 @@ async function GAMES202Main() {
 		await cubeMaps[i].init();
 	}
 	// load skybox
-	loadOBJ(renderer, 'assets/testObj/', 'testObj', 'SkyBoxMaterial', skyBoxTransform);
+	loadOBJ(renderer, '../assets/testObj/', 'testObj', 'SkyBoxMaterial', skyBoxTransform);
 
 	// file parsing
 	for (let i = 0; i < envmap.length; i++) {
@@ -115,8 +115,8 @@ async function GAMES202Main() {
 	}
 
 	// TODO: load model - Add your Material here
-	// loadOBJ(renderer, 'assets/mary/', 'mary', 'PRTMaterial', boxTransform);
-	loadOBJ(renderer, 'assets/mary/', 'mary', 'PRTMaterial', box2Transform);
+	// loadOBJ(renderer, '../assets/mary/', 'mary', 'PRTMaterial', boxTransform);
+	loadOBJ(renderer, '../assets/mary/', 'mary', 'PRTMaterial', box2Transform);
 
 
 	function createGUI() {
