@@ -8,7 +8,6 @@
 #ifndef __OBJ_LOADER_HPP__
 #define __OBJ_LOADER_HPP__
 
-
 #include <optional>
 #include <iostream>
 #include <vector>
@@ -1155,6 +1154,5 @@ namespace objl
         }
     };
 }
-
 
 #endif

@@ -3,7 +3,7 @@
 #ifndef __LIGHT_HPP__
 #define __LIGHT_HPP__
 
-#include "Vector.hpp"
+#include "Vector.cuh"
 
 class Light
 {

@@ -3,11 +3,11 @@
 #ifndef __BOUNDS3_HPP__
 #define __BOUNDS3_HPP__
 
-#include "Ray.hpp"
-#include "Vector.hpp"
+#include "Ray.cuh"
+#include "Vector.cuh"
 #include <limits>
 #include <array>
-#include "global.hpp"
+#include "global.cuh"
 
 class Bounds3 : public CudaMemory
 {
@@ -30,10 +30,10 @@ public:
     __device__ Bounds3(const Vector3f p) : pMin(p), pMax(p) {}
     __device__ Bounds3(const Vector3f p1, const Vector3f p2)
     {
-        pMin = Vector3f(fmin(p1.x, p2.x), fmin(p1.y, p2.y), fmin(p1.z, p2.z));
-        pMax = Vector3f(fmax(p1.x, p2.x), fmax(p1.y, p2.y), fmax(p1.z, p2.z));
+        pMin = Vector3f(cuda::min(p1.x, p2.x), cuda::min(p1.y, p2.y), cuda::min(p1.z, p2.z));
+        pMax = Vector3f(cuda::max(p1.x, p2.x), cuda::max(p1.y, p2.y), cuda::max(p1.z, p2.z));
     }
-
+    
     Bounds3(const Vector3f p1, const Vector3f p2, bool bHost)
     {
         pMin = Vector3f(fmin(p1.x, p2.x), fmin(p1.y, p2.y), fmin(p1.z, p2.z), bHost);
@@ -59,7 +59,7 @@ public:
     }
 
     __device__ Vector3f Centroid() { return pMin * 0.5 + pMax * 0.5; }
-    __device__ Bounds3 Intersect(const Bounds3 &b) { return Bounds3(Vector3f(fmax(pMin.x, b.pMin.x), fmax(pMin.y, b.pMin.y), fmax(pMin.z, b.pMin.z)), Vector3f(fmin(pMax.x, b.pMax.x), fmin(pMax.y, b.pMax.y), fmin(pMax.z, b.pMax.z))); }
+    __device__ Bounds3 Intersect(const Bounds3 &b) { return Bounds3(Vector3f(cuda::max(pMin.x, b.pMin.x), cuda::max(pMin.y, b.pMin.y), cuda::max(pMin.z, b.pMin.z)), Vector3f(cuda::min(pMax.x, b.pMax.x), cuda::min(pMax.y, b.pMax.y), cuda::min(pMax.z, b.pMax.z))); }
 
     __device__ Vector3f Offset(const Vector3f &p) const
     {
@@ -94,23 +94,25 @@ public:
     __device__ bool IntersectP(const Ray &ray, const Vector3f &invDir, const bool dirIsNeg[3]) const
     {
         // Home Work Begin
-        // 光线进入点
-        float tEnter = -INFINITY_FLOAT;
-        // 光线离开点
-        float tExit = INFINITY_FLOAT;
-        for (int i = 0; i < 3; i++)
+        Vector3f tMin = (pMin - ray.origin) * invDir;
+        Vector3f tMax = (pMax - ray.origin) * invDir;
+        if (!dirIsNeg[0])
         {
-            float min = (pMin[i] - ray.origin[i]) * invDir[i];
-            float max = (pMax[i] - ray.origin[i]) * invDir[i];
-            // 坐标为负的话，需要进行交换
-            if (!dirIsNeg[i])
-            {
-                cuda::swap(min, max);
-            }
-            tEnter = cuda::max(min, tEnter);
-            tExit = cuda::min(max, tExit);
+            cuda::swap(tMin.x, tMax.x);
         }
-        return tEnter <= tExit && tExit >= 0;
+        if (!dirIsNeg[1])
+        {
+            cuda::swap(tMin.y, tMax.y);
+        }
+        if (!dirIsNeg[2])
+        {
+            cuda::swap(tMin.z, tMax.z);
+        }
+        float tEnter = cuda::max(tMin.x, cuda::max(tMin.y, tMin.z));
+        float tExit = cuda::max(tMax.x, cuda::max(tMax.y, tMax.z));
+        // printf("%f %f %f %f %f %f %d\n", pMin.x, pMin.y, pMin.z, pMax.x, pMax.y, pMax.z, tEnter <= tExit && tExit >= 0.0f);
+        // return tEnter <= tExit && tExit >= 0.0f;
+        return false;
         // Home Work End
     }
 };
@@ -133,7 +135,6 @@ __device__ static Bounds3 Union(const Bounds3 &b, const Vector3f &p)
 
 static Bounds3 Union(const Bounds3 &b, const Vector3f &p, bool bHost)
 {
-        assert(bHost);
     Bounds3 ret(bHost);
     ret.pMin = Vector3f::Min(b.pMin, p, bHost);
     ret.pMax = Vector3f::Max(b.pMax, p, bHost);

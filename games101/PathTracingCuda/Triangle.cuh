@@ -3,11 +3,11 @@
 #ifndef __TRIANGLE_HPP__
 #define __TRIANGLE_HPP__
 
-#include "BVH.hpp"
-#include "Intersection.hpp"
-#include "Material.hpp"
-#include "Object.hpp"
-#include "OBJ_Loader.hpp"
+#include "BVH.cuh"
+#include "Intersection.cuh"
+#include "Material.cuh"
+#include "Object.cuh"
+#include "OBJ_Loader.cuh"
 
 __device__ static bool rayTriangleIntersect(const Vector3f &v0, const Vector3f &v1,
                                             const Vector3f &v2, const Vector3f &orig,
@@ -90,7 +90,7 @@ public:
         return inter;
     }
     __device__ void getSurfaceProperties(const Vector3f &P, const Vector3f &I, const uint32_t &index, const Vector2f &uv, Vector3f &N, Vector2f &st) const { N = normal; }
-    __device__ Vector3f evalDiffuseColor(const Vector2f &) const { return Vector3f(0.5, 0.5, 0.5); }
+    __device__ Vector3f evalDiffuseColor(const Vector2f &) const { return Vector3f(0.5f, 0.5f, 0.5f); }
     __device__ Bounds3 getBounds() { return Union(Bounds3(v0, v1), v2); }
 
     __device__ void Sample(Intersection &pos, float &pdf, int thread_id)
@@ -113,7 +113,7 @@ public:
 class MeshTriangle : public Object
 {
 public:
-    MeshTriangle(const std::string &filename, Material *mt = new Material(), Vector3f Trans = Vector3f(0.0, 0.0, 0.0), Vector3f Scale = Vector3f(1.0, 1.0, 1.0)) : Object(EObjectType::MeshTriangle)
+    __device__ MeshTriangle(const std::string &filename, Material *mt = new Material(), Vector3f Trans = Vector3f(0.0, 0.0, 0.0), Vector3f Scale = Vector3f(1.0, 1.0, 1.0)) : Object(EObjectType::MeshTriangle)
     {
         objl::Loader loader;
         loader.LoadFile(filename);
@@ -122,12 +122,12 @@ public:
         assert(loader.LoadedMeshes.size() == 1);
         auto mesh = loader.LoadedMeshes[0];
 
-        Vector3f min_vert = Vector3f{INFINITY_FLOAT,
+        Vector3f min_vert = Vector3f(INFINITY_FLOAT,
                                      INFINITY_FLOAT,
-                                     INFINITY_FLOAT, true};
-        Vector3f max_vert = Vector3f{-INFINITY_FLOAT,
+                                     INFINITY_FLOAT, true);
+        Vector3f max_vert = Vector3f(-INFINITY_FLOAT,
                                      -INFINITY_FLOAT,
-                                     -INFINITY_FLOAT, true};
+                                     -INFINITY_FLOAT, true);
         for (int i = 0; i < mesh.Vertices.size(); i += 3)
         {
             std::array<Vector3f, 3> face_vertices;
@@ -145,8 +145,7 @@ public:
                                     std::max(max_vert.y, vert.y),
                                     std::max(max_vert.z, vert.z), true);
             }
-            triangles.emplace_back(new Triangle(face_vertices[0], face_vertices[1],
-                                                face_vertices[2], mt));
+            triangles.emplace_back(new Triangle(face_vertices[0], face_vertices[1], face_vertices[2], mt));
         }
         bounding_box = Bounds3(min_vert, max_vert, true);
         Object *objects[MAX_MESH_OBJECT];
@@ -158,10 +157,7 @@ public:
         }
         bvh = new BVHAccel(objects, objects_nums);
     }
-    Bounds3 getBounds(bool bHost)
-    {
-        return bounding_box;
-    }
+
     __device__ Bounds3 getBounds() { return bounding_box; }
     __device__ bool intersect(const Ray &ray) { return true; }
     __device__ bool intersect(const Ray &ray, float &tnear, uint32_t &index) const
@@ -201,7 +197,7 @@ public:
         float scale = 5;
         float pattern =
             (fmodf(st.x * scale, 1) > 0.5) ^ (fmodf(st.y * scale, 1) > 0.5);
-        return lerp(Vector3f(0.815, 0.235, 0.031), Vector3f(0.937, 0.937, 0.231), pattern);
+        return lerp(Vector3f(0.815f, 0.235f, 0.031f), Vector3f(0.937f, 0.937f, 0.231f), pattern);
     }
     __device__ Intersection getIntersection(Ray ray)
     {

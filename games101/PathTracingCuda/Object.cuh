@@ -1,4 +1,4 @@
-#include "CudaMemory.hpp"
+#include "CudaMemory.cuh"
 
 enum class EObjectType
 {

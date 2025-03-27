@@ -3,7 +3,7 @@
 #ifndef __MATERIAL_HPP__
 #define __MATERIAL_HPP__
 
-#include "Vector.hpp"
+#include "Vector.cuh"
 
 enum MaterialType
 {
@@ -120,7 +120,7 @@ public:
     Vector3f Kd, Ks;
     float specularExponent;
 
-    __device__ Material(MaterialType t = DIFFUSE, Vector3f e = Vector3f(0, 0, 0)) : m_type(t), m_emission(e) {}
+    __device__ Material(MaterialType t = DIFFUSE, Vector3f e = Vector3f(0.f)) : m_type(t), m_emission(e) {}
     __device__ MaterialType getType() { return m_type; }
     __device__ Vector3f getColorAt(double u, double v) { return Vector3f(); }
     __device__ Vector3f getEmission() { return m_emission; }
@@ -159,7 +159,7 @@ public:
             break;
         }
         }
-        return Vector3f(0);
+        return Vector3f(0.f);
     }
 
     __device__ float pdf(const Vector3f &wi, const Vector3f &wo, const Vector3f &N)

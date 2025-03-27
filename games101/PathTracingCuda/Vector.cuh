@@ -3,8 +3,9 @@
 #ifndef __VECTOR_HPP__
 #define __VECTOR_HPP__
 
-#include "global.hpp"
-#include "CudaMemory.hpp"
+#include "global.cuh"
+#include "CudaMemory.cuh"
+#include <iostream>
 
 class Vector3f : public CudaMemory
 {
@@ -12,7 +13,9 @@ public:
     float x, y, z;
     __device__ Vector3f() : x(0), y(0), z(0) {}
     __device__ Vector3f(float xx) : x(xx), y(xx), z(xx) {}
+    __device__ Vector3f(double xx) : x(xx), y(xx), z(xx) {}
     __device__ Vector3f(float xx, float yy, float zz) : x(xx), y(yy), z(zz) {}
+    __device__ Vector3f(double xx, double yy, double zz) : x(xx), y(yy), z(zz) {}
     Vector3f(float xx, float yy, float zz, bool bHost) : x(xx), y(yy), z(zz) {}
     __device__ float norm() { return sqrt(x * x + y * y + z * z); }
     float norm(bool bHost) { return sqrt(x * x + y * y + z * z); }
@@ -35,6 +38,31 @@ public:
         x += v.x, y += v.y, z += v.z;
         return *this;
     }
+    __device__ Vector3f &operator+=(Vector3f &v)
+    {
+        x += v.x, y += v.y, z += v.z;
+        return *this;
+    }
+    __device__ Vector3f &operator+=(const Vector3f &&v)
+    {
+        x += v.x, y += v.y, z += v.z;
+        return *this;
+    }
+    __device__ Vector3f &operator+=(Vector3f &&v)
+    {
+        x += v.x, y += v.y, z += v.z;
+        return *this;
+    }
+    __device__ Vector3f &operator+=(const float &v)
+    {
+        x += v, y += v, z += v;
+        return *this;
+    }
+    __device__ Vector3f &operator+=(const double &v)
+    {
+        x += v, y += v, z += v;
+        return *this;
+    }
     __device__ double operator[](int index) const
     {
         return (&x)[index];
@@ -43,6 +71,8 @@ public:
     __device__ static Vector3f Max(const Vector3f &p1, const Vector3f &p2) { return Vector3f(cuda::max(p1.x, p2.x), cuda::max(p1.y, p2.y), cuda::max(p1.z, p2.z)); }
     static Vector3f Min(const Vector3f &p1, const Vector3f &p2, bool bHost) { return Vector3f(std::min(p1.x, p2.x), std::min(p1.y, p2.y), std::min(p1.z, p2.z), bHost); }
     static Vector3f Max(const Vector3f &p1, const Vector3f &p2, bool bHost) { return Vector3f(std::max(p1.x, p2.x), std::max(p1.y, p2.y), std::max(p1.z, p2.z), bHost); }
+    
+    __device__ friend std::ostream &operator<<(std::ostream &os, const Vector3f &v) { return os << v.x << ", " << v.y << ", " << v.z; }
 };
 
 __device__ static Vector3f normalize(const Vector3f &v)

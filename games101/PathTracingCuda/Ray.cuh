@@ -3,7 +3,7 @@
 #ifndef __RAY_HPP__
 #define __RAY_HPP__
 
-#include "Vector.hpp"
+#include "Vector.cuh"
 
 struct Ray
 {
@@ -14,7 +14,7 @@ struct Ray
 
     __device__ Ray(const Vector3f *ori, const Vector3f &dir, const double _t = 0.0) : origin(*ori), direction(dir), t(_t)
     {
-        direction_inv = Vector3f(1. / direction.x, 1. / direction.y, 1. / direction.z);
+        direction_inv = Vector3f(1.f / direction.x, 1.f / direction.y, 1.f / direction.z);
         t_min = 0.0;
         t_max = MAX_DOUBLE;
     }
@@ -22,7 +22,7 @@ struct Ray
 
     Ray(const Vector3f *ori, const Vector3f &dir, bool bHost, const double _t = 0.0) : origin(*ori), direction(dir), t(_t)
     {
-        direction_inv = Vector3f(1. / direction.x, 1. / direction.y, 1. / direction.z, bHost);
+        direction_inv = Vector3f(1.f / direction.x, 1.f / direction.y, 1.f / direction.z, bHost);
         t_min = 0.0;
         t_max = MAX_DOUBLE;
     }

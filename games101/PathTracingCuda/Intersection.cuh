@@ -3,8 +3,8 @@
 #ifndef __INTERSECTION_HPP__
 #define __INTERSECTION_HPP__
 
-#include "Vector.hpp"
-#include "Material.hpp"
+#include "Vector.cuh"
+#include "Material.cuh"
 
 class Object;
 

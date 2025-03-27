@@ -1,9 +1,9 @@
 //
 // Created by goksu on 2/25/20.
 //
-#include "../Renderer.hpp"
-#include "../Scene.hpp"
-#include "../BVH.hpp"
+#include "../Renderer.cuh"
+#include "../Scene.cuh"
+#include "../BVH.cuh"
 
 __device__ void BVHAccel::getSample(BVHBuildNode *node, float oPos, Intersection &pos, float &pdf, int thread_id)
 {
@@ -39,6 +39,7 @@ __device__ Intersection BVHAccel::getIntersection(BVHBuildNode *node, const Ray 
     // 判断坐标是否为负
     bool dirsIsNeg[3] = {x > 0, y > 0, z > 0};
     // 判断结点的包围盒与光线是否相交
+    printf("%f %f %f, %f %f %f\n", node->bounds.pMax.x, node->bounds.pMax.y, node->bounds.pMax.z, node->bounds.pMin.x, node->bounds.pMin.y, node->bounds.pMin.z);
     if (node->bounds.IntersectP(ray, ray.direction_inv, dirsIsNeg) == false)
         return inter;
     if (node->left == nullptr && node->right == nullptr)
@@ -72,10 +73,10 @@ __device__ Vector3f Scene::castRay(const Ray &ray, int depth, int thread_id) con
             if (depth == 0)
                 return inter.m->getEmission();
             else
-                return Vector3f(0, 0, 0);
+                return Vector3f(0.0f);
         }
-        Vector3f L_dir(0, 0, 0);
-        Vector3f L_indir(0, 0, 0);
+        Vector3f L_dir(0.0f);
+        Vector3f L_indir(0.0f);
         // 随机 sample 灯光，用该 sample 的结果判断射线是否击中光源
         Intersection lightInter;
         float pdf_light = 0.0f;
@@ -111,34 +112,34 @@ __device__ Vector3f Scene::castRay(const Ray &ray, int depth, int thread_id) con
         }
         return L_dir + L_indir;
     }
-    return Vector3f(0, 0, 0);
+    return Vector3f(0.0f);
 }
 
 __global__ void kernel(Scene *scene, int spp, Vector3f *eye_pos, float scale, float imageAspectRatio, Vector3f *framebuffer)
 {
     int tid = blockIdx.x * blockDim.x + threadIdx.x;
     int offset = gridDim.x * blockDim.x;
-    int total_count = scene->width * scene->height * spp;
+    int pixel_num = scene->width * scene->height;
+    int total_count = pixel_num * spp;
     while (tid < total_count)
     {
-        // 修正索引计算：按像素和采样分解
-        int pixel_id = tid / spp; // 像素ID
-        int i = pixel_id % scene->width;
-        int j = pixel_id / scene->width;
-
+        int spp_times = tid / pixel_num;
+        int pixel_id = tid % pixel_num;
+        // int i = pixel_id % scene->width;
+        // int j = pixel_id / scene->width;
+        int i = 256;
+        int j = 256;
         // 检查i和j是否越界
         if (i >= scene->width || j >= scene->height)
         {
             tid += offset;
-            printf("out\n");
             continue;
         }
-
         float x = (2 * (i + 0.5) / (float)scene->width - 1) * imageAspectRatio * scale;
         float y = (1 - 2 * (j + 0.5) / (float)scene->height) * scale;
-        Vector3f dir = normalize(Vector3f(-x, y, 1));
-
-        framebuffer[j * scene->width + i] += scene->castRay(Ray(eye_pos, dir), 0, tid) / spp;
+        Vector3f dir = normalize(Vector3f(-x, y, 1.f));
+        Vector3f color = scene->castRay(Ray(eye_pos, dir), 0, tid) / spp;
+        framebuffer[j * scene->width + i] += color;
         tid += offset;
     }
 }
@@ -187,7 +188,7 @@ void Renderer::Render(Scene *scene, int spp, Vector3f &in_eye_pos, Vector3f *in_
     cudaMalloc((void **)&eye_pos, sizeof(Vector3f));
     cudaMemcpy(eye_pos, &in_eye_pos, sizeof(Vector3f), cudaMemcpyHostToDevice);
 
-    float scale = std::tan(scene->fov * 0.5 / 180.f * M_PI);
+    float scale = std::tan(scene->fov * 0.5f / 180.0f * M_PI);
     float imageAspectRatio = (float)scene->width / (float)scene->height;
 
     int threads_per_block = spp;

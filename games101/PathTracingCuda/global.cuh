@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <cassert>
 
-constexpr float EPSILON = 1e-6;
+constexpr float EPSILON = 1e-6f;
 constexpr float MAX_FLOAT = std::numeric_limits<float>::max();
 constexpr float INFINITY_FLOAT = std::numeric_limits<float>::infinity();
 constexpr double MAX_DOUBLE = std::numeric_limits<double>::max();
@@ -24,10 +24,10 @@ static bool SolveQuadratic(const float &a, const float &b, const float &c, float
     if (discr < 0)
         return false;
     else if (discr == 0)
-        x0 = x1 = -0.5 * b / a;
+        x0 = x1 = -0.5f * b / a;
     else
     {
-        float q = (b > 0) ? -0.5 * (b + std::sqrt(discr)) : -0.5 * (b - std::sqrt(discr));
+        float q = (b > 0.0f) ? -0.5f * (b + std::sqrt(discr)) : -0.5f * (b - std::sqrt(discr));
         x0 = q / a;
         x1 = c / q;
     }
@@ -70,10 +70,10 @@ namespace cuda
         if (discr < 0)
             return false;
         else if (discr == 0)
-            x0 = x1 = -0.5 * b / a;
+            x0 = x1 = -0.5f * b / a;
         else
         {
-            float q = (b > 0) ? -0.5 * (b + sqrt(discr)) : -0.5 * (b - sqrt(discr));
+            float q = (b > 0.0f) ? -0.5f * (b + sqrt(discr)) : -0.5f * (b - sqrt(discr));
             x0 = q / a;
             x1 = c / q;
         }

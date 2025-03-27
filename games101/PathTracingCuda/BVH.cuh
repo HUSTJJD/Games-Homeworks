@@ -7,24 +7,22 @@
 #include <vector>
 #include <memory>
 #include <ctime>
-#include "CudaMemory.hpp"
-#include "Ray.hpp"
-#include "Bounds3.hpp"
-#include "Intersection.hpp"
-#include "Vector.hpp"
+#include "CudaMemory.cuh"
+#include "Ray.cuh"
+#include "Bounds3.cuh"
+#include "Intersection.cuh"
+#include "Vector.cuh"
 
 struct BVHBuildNode : public CudaMemory
 {
+public:
     Bounds3 bounds;
+    float area;
     BVHBuildNode *left;
     BVHBuildNode *right;
     Object *object;
-    float area;
-
-public:
-    int splitAxis = 0, firstPrimOffset = 0, nPrimitives = 0;
     // BVHBuildNode Public Methods
-    BVHBuildNode()
+    __device__ BVHBuildNode()
     {
         bounds = Bounds3(true);
         left = nullptr;
@@ -51,7 +49,7 @@ public:
     Object *primitives[MAX_PRIMITIVES];
     int primitives_num = 0;
 
-    BVHAccel(Object *const objects[], const int objects_num, int maxPrimsInNode = 1, SplitMethod splitMethod = SplitMethod::NAIVE) : maxPrimsInNode(std::min(255, maxPrimsInNode)), splitMethod(splitMethod)
+    __device__ BVHAccel(Object *const objects[], const int objects_num, int maxPrimsInNode = 1, SplitMethod splitMethod = SplitMethod::NAIVE) : maxPrimsInNode(std::min(255, maxPrimsInNode)), splitMethod(splitMethod)
     {
         if (primitives_num + objects_num > MAX_PRIMITIVES)
             return;
@@ -60,21 +58,21 @@ public:
         {
             primitives[primitives_num++] = objects[i];
         }
-        std::vector<Object *> primitives_vector;
-        for (int i = 0; i < primitives_num; i++)
-        {
-            primitives_vector.push_back(primitives[i]);
-        }
-        if (primitives_vector.empty())
+        // Object* primitives_vector[primitives_num];
+        // for (int i = 0; i < primitives_num; i++)
+        // {
+        //     primitives_vector.push_back(primitives[i]);
+        // }
+        if (primitives_num == 0)
             return;
-        root = recursiveBuild(primitives_vector);
+        root = recursiveBuild(primitives, primitives_num);
     }
 
     Bounds3 WorldBound() const;
 
     ~BVHAccel();
 
-    BVHBuildNode *recursiveBuild(std::vector<Object *> objects);
+    __device__ BVHBuildNode *recursiveBuild(Object ** objects, int num);
 
     __device__ Intersection Intersect(const Ray &ray) const
     {

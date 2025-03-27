@@ -4,12 +4,12 @@
 #define __SCENE_HPP__
 
 #include <vector>
-#include "Vector.hpp"
-#include "CudaMemory.hpp"
-#include "Light.hpp"
-#include "BVH.hpp"
-#include "Ray.hpp"
-#include "Triangle.hpp"
+#include "Vector.cuh"
+#include "CudaMemory.cuh"
+#include "Light.cuh"
+#include "BVH.cuh"
+#include "Ray.cuh"
+#include "Triangle.cuh"
 
 class Scene : public CudaMemory
 {
@@ -18,9 +18,9 @@ public:
     int width = 1280;
     int height = 960;
     double fov = 40;
-    Vector3f backgroundColor = Vector3f(0.235294, 0.67451, 0.843137);
+    Vector3f backgroundColor = Vector3f(0.235294f, 0.67451f, 0.843137f);
     int maxDepth = 1;
-    float RussianRoulette = 0.8;
+    float RussianRoulette = 0.8f;
     BVHAccel *bvh;
     Object *objects[MAX_OBJECT];
     int objects_num = 0;
@@ -59,7 +59,7 @@ public:
         int mins = ((int)diff / 60) - (hrs * 60);
         int secs = (int)diff - (hrs * 3600) - (mins * 60);
         printf(" - BVH Generation complete: \n - Time Taken: %i hrs, %i mins, %i secs\n\n",
-            hrs, mins, secs);
+               hrs, mins, secs);
     }
 
     __device__ Intersection intersect(const Ray &ray) const { return this->bvh->Intersect(ray); }
@@ -67,23 +67,23 @@ public:
     __device__ void sampleLight(Intersection &pos, float &pdf, int thread_id) const
     {
         float emit_area_sum = 0;
-        for (uint32_t k = 0; k < objects_num; ++k)
+        for (int k = 0; k < objects_num; ++k)
         {
-            if (((MeshTriangle*)objects[k])->hasEmit())
+            if (((MeshTriangle *)objects[k])->hasEmit())
             {
-                emit_area_sum += ((MeshTriangle*)objects[k])->getArea();
+                emit_area_sum += ((MeshTriangle *)objects[k])->getArea();
             }
         }
         float p = cuda::get_random_float(thread_id) * emit_area_sum;
         emit_area_sum = 0;
-        for (uint32_t k = 0; k < objects_num; ++k)
+        for (int k = 0; k < objects_num; ++k)
         {
-            if (((MeshTriangle*)objects[k])->hasEmit())
+            if (((MeshTriangle *)objects[k])->hasEmit())
             {
-                emit_area_sum += ((MeshTriangle*)objects[k])->getArea();
+                emit_area_sum += ((MeshTriangle *)objects[k])->getArea();
                 if (p <= emit_area_sum)
                 {
-                    ((MeshTriangle*)objects[k])->Sample(pos, pdf, thread_id);
+                    ((MeshTriangle *)objects[k])->Sample(pos, pdf, thread_id);
                     break;
                 }
             }
@@ -93,12 +93,12 @@ public:
     __device__ bool trace(const Ray &ray, const std::vector<Object *> &objects, float &tNear, uint32_t &index, Object **hitObject)
     {
         *hitObject = nullptr;
-        for (uint32_t k = 0; k < objects_num; ++k)
+        for (int k = 0; k < objects_num; ++k)
         {
             float tNearK = MAX_FLOAT;
             uint32_t indexK;
             Vector2f uvK;
-            if (((MeshTriangle*)objects[k])->intersect(ray, tNearK, indexK) && tNearK < tNear)
+            if (((MeshTriangle *)objects[k])->intersect(ray, tNearK, indexK) && tNearK < tNear)
             {
                 *hitObject = objects[k];
                 tNear = tNearK;

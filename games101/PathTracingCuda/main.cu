@@ -1,8 +1,8 @@
-#include "Renderer.hpp"
-#include "Scene.hpp"
-#include "Triangle.hpp"
-#include "Vector.hpp"
-#include "global.hpp"
+#include "Renderer.cuh"
+#include "Scene.cuh"
+#include "Triangle.cuh"
+#include "Vector.cuh"
+#include "global.cuh"
 #include <chrono>
 
 // In the main function of the program, we create the scene (create objects and
@@ -28,8 +28,8 @@ int main(int argc, char **argv)
     light->Kd = Vector3f(0.65f);
 
     Material *whiteM = new Material(Microfacet, Vector3f(0.0f));
-    whiteM->Ks = Vector3f(0.45, 0.45, 0.45);
-    whiteM->Kd = Vector3f(0.3, 0.3, 0.25);
+    whiteM->Ks = Vector3f(0.45f, 0.45f, 0.45f);
+    whiteM->Kd = Vector3f(0.3f, 0.3f, 0.25f);
 
     MeshTriangle *floor = new MeshTriangle("../../models/cornellbox/floor.obj", white);
     MeshTriangle *shortbox = new MeshTriangle("../../models/cornellbox/shortbox.obj", white);
@@ -48,7 +48,7 @@ int main(int argc, char **argv)
     scene->buildBVH();
 
     Renderer renderer;
-    constexpr int spp = 64;
+    constexpr int spp = 1;
     std::cout << "SPP: " << spp << "\n";
 
     Vector3f eye_pos(278.0f, 273.0f, -800.0f);
