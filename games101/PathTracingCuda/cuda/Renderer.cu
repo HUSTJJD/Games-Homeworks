@@ -1,9 +1,9 @@
 //
 // Created by goksu on 2/25/20.
 //
-#include "../Renderer.cuh"
-#include "../Scene.cuh"
-#include "../BVH.cuh"
+#include "../Renderer.hpp"
+#include "../Scene.hpp"
+#include "../BVH.hpp"
 
 __device__ void BVHAccel::getSample(BVHBuildNode *node, float oPos, Intersection &pos, float &pdf, int thread_id)
 {
@@ -123,7 +123,6 @@ __global__ void kernel(Scene *scene, int spp, Vector3f *eye_pos, float scale, fl
     int total_count = pixel_num * spp;
     while (tid < total_count)
     {
-        int spp_times = tid / pixel_num;
         int pixel_id = tid % pixel_num;
         // int i = pixel_id % scene->width;
         // int j = pixel_id / scene->width;

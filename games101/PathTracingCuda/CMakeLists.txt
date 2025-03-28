@@ -11,11 +11,11 @@ include_directories(${CUDA_INCLUDE_DIRS})
 
 cuda_add_executable(
     PathTracingCuda
-    Bounds3.cuh BVH.cuh BVH.cu Vector.cuh 
-    global.cuh cuda/Renderer.cu
-    Intersection.cuh Light.cuh main.cu Material.cuh 
-    OBJ_Loader.cuh Object.cuh Ray.cuh Renderer.cuh
-    Scene.cuh Triangle.cuh 
+    Bounds3.hpp BVH.hpp BVH.cpp Vector.hpp 
+    global.hpp cuda/Renderer.cu
+    Intersection.hpp Light.hpp main.cpp Material.hpp 
+    OBJ_Loader.hpp Object.hpp Ray.hpp Renderer.hpp
+    Scene.hpp Triangle.hpp 
 )
 
 target_link_libraries(${PROJECT_NAME})
