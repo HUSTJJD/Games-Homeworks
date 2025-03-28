@@ -31,6 +31,11 @@ __device__ Intersection BVHAccel::getIntersection(BVHBuildNode *node, const Ray 
 {
     // Home Work Begin
     Intersection inter;
+    if (!node)
+    {
+        return inter;
+    }
+
     // 判断光线方向是否为负
     // 光线方向
     float x = ray.direction.x;
@@ -39,7 +44,7 @@ __device__ Intersection BVHAccel::getIntersection(BVHBuildNode *node, const Ray 
     // 判断坐标是否为负
     bool dirsIsNeg[3] = {x > 0, y > 0, z > 0};
     // 判断结点的包围盒与光线是否相交
-    printf("%f %f %f, %f %f %f\n", node->bounds.pMax.x, node->bounds.pMax.y, node->bounds.pMax.z, node->bounds.pMin.x, node->bounds.pMin.y, node->bounds.pMin.z);
+    node->bounds = Bounds3(node->bounds.pMin, node->bounds.pMax);
     if (node->bounds.IntersectP(ray, ray.direction_inv, dirsIsNeg) == false)
         return inter;
     if (node->left == nullptr && node->right == nullptr)
@@ -124,10 +129,10 @@ __global__ void kernel(Scene *scene, int spp, Vector3f *eye_pos, float scale, fl
     while (tid < total_count)
     {
         int pixel_id = tid % pixel_num;
-        // int i = pixel_id % scene->width;
-        // int j = pixel_id / scene->width;
-        int i = 256;
-        int j = 256;
+        int i = pixel_id % scene->width;
+        int j = pixel_id / scene->width;
+        // int i = 256;
+        // int j = 256;
         // 检查i和j是否越界
         if (i >= scene->width || j >= scene->height)
         {

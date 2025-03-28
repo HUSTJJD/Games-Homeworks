@@ -133,7 +133,6 @@ __device__ static Bounds3 Union(const Bounds3 &b, const Vector3f &p)
 
 static Bounds3 Union(const Bounds3 &b, const Vector3f &p, bool bHost)
 {
-        assert(bHost);
     Bounds3 ret(bHost);
     ret.pMin = Vector3f::Min(b.pMin, p, bHost);
     ret.pMax = Vector3f::Max(b.pMax, p, bHost);
